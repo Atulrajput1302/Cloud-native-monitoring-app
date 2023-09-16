@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title >System Monitoring</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        .main-conatiner{
+            background-color: black;
+        }
+        .plotly-graph-div {
+            margin: auto;
+            width: 50%;
+            padding: 20px;
+        }
+        .container{
+            background-color: black; 
+        
+        }
+        .heading-main{
+            color: rgb(44, 155, 44);
+            display: flex;
+            align-items: center;
+            max-width: 1024px;
+            margin-left: 920px;
+            font-size: xx-large;
+        }
+    </style>
+</head>
+
+
+
+
+<body class="main-conatiner">
+    <div class="container">
+        <h1 class = "heading-main">System Resources Monitoring</h1>
+        <div id="cpu-gauge"></div>
+        <div id="mem-gauge"></div>
+        {% if message %}
+        <div class="alert alert-danger">{{ message }}</div>
+        {% endif %}
+    </div>
+    <script>
+        var cpuGauge = {
+            type: "indicator",
+            mode: "gauge+number",
+            value: {{ cpu_metric }},
+            gauge: {
+                axis: { range: [null, 100] },
+                bar: { color: "#1f77b4" },
+                bgcolor: "white",
+                borderwidth: 2,
+                bordercolor: "#ccc",
+                steps: [
+                    { range: [0, 50], color: "#0FFF50" },
+                    { range: [50, 85], color: "#FFFF00" },
+                    { range: [85, 100], color: "#FF0000" }
+                ],
+                threshold: {
+                    line: { color: "black", width: 4 },
+                    thickness: 0.75,
+                    value: {{ cpu_metric }}
+                }
+            }
+        };
+        
+        var memGauge = {
+            type: "indicator",
+            mode: "gauge+number",
+            value: {{ mem_metric }},
+            gauge: {
+                axis: { range: [null, 100] },
+                bar: { color: "#1f77b4"},
+                bgcolor: "white",
+                borderwidth: 2,
+                bordercolor: "#ccc",
+                steps: [
+                    { range: [0, 50], color: "#0FFF50" },
+                    { range: [50, 85], color: "#FFFF00" },
+                    { range: [85, 100], color: "#FF0000" }
+                ],
+                threshold: {
+                    line: { color: "black", width: 4 },
+                    thickness: 1.75,
+                    value: {{ mem_metric }}
+                }
+            }
+        };
+        
+        var cpuGaugeLayout = { title: "CPU Utilization" };
+        var memGaugeLayout = { title: "Memory Utilization" };
+        
+        Plotly.newPlot('cpu-gauge', [cpuGauge], cpuGaugeLayout);
+        Plotly.newPlot('mem-gauge', [memGauge], memGaugeLayout);
+    </script>
+</body>
+</html>
